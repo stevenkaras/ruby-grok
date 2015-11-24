@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
 
   # TODO(sissel): ffi is now optional, get rid of it?
   #spec.add_dependency("ffi", "> 0.6.3")
-  spec.require_paths << "lib" 
+  spec.require_paths << "lib"
 
   # Cabin for logging.
   spec.add_dependency("cabin", ">=0.6.0")

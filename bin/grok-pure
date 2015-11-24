@@ -1,0 +1,53 @@
+#!/usr/bin/env ruby
+
+# always use the jls-grok that we're part of
+$:.unshift(File.expand_path("../../lib", __FILE__))
+
+require 'optparse'
+require 'pp'
+require 'grok-pure'
+
+options = {
+  pattern_files: [],
+  pattern_dirs: [File.expand_path("../../patterns/pure-ruby", __FILE__)],
+}
+opts = OptionParser.new do |opts|
+  opts.banner = "Usage: #{$PROGRAM_NAME} [OPTIONS] NEEDLE HAYSTACK"
+
+  opts.on("-dDIR", "--pattern-dir=DIR", "Load patterns from files in a directory") do |directory|
+    options[:pattern_dirs] << directory
+  end
+
+  opts.on("-fFILE", "--pattern-file=FILE", "Load patterns from a file") do |file|
+    options[:pattern_files] << file
+  end
+end
+opts.parse!
+
+if ARGV.size != 2
+  puts opts.banner
+  exit 1
+end
+
+grok = Grok.new
+options[:pattern_dirs].each do |dir|
+  Dir[File.expand_path("*", dir)].each do |file|
+    next unless File.file?(file)
+    options[:pattern_files] << file
+  end
+end
+options.delete(:pattern_dirs)
+options[:pattern_files].each do |file|
+  grok.add_patterns_from_file(file)
+end
+
+needle, haystack = ARGV
+
+grok.compile(needle)
+match = grok.match(haystack)
+if match
+  puts "MATCH:"
+  pp match.captures
+else
+  puts "No Match."
+end

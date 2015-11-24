@@ -9,6 +9,7 @@ Gem::Specification.new do |spec|
   spec.summary = "grok bindings for ruby"
   spec.description = "Grok ruby bindings - pattern match/extraction tool"
   spec.files = files
+  spec.executables << "grok-pure"
 
   # TODO(sissel): ffi is now optional, get rid of it?
   #spec.add_dependency("ffi", "> 0.6.3")
